@@ -31,7 +31,4 @@ mv data/mesh/* data/
 rm -rf data/mesh
 rm -rf mesh.zip
 
-echo -e "\n${COLOR}Installing conda env..."
-conda env create -f environment.yml
-
 echo -e "\n${COLOR}Installation has finished!"
