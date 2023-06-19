@@ -13,3 +13,7 @@ RUN apt-get install gcc -y
 RUN apt-get install --reinstall build-essential -y
 RUN pip install insightface
 RUN git config --global --add safe.directory /mnt/faster0/jrs68/metrical-tracker
+RUN git config --global --add safe.directory /mnt/faster0/jrs68/metrical-tracker/MICA
+
+RUN git config --global user.name Jack
+RUN git config --global user.email jacksaunders909@gmail.com
