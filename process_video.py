@@ -38,7 +38,7 @@ def main(args):
 
     # Postprocess
     cmd = f"{sys.executable} postprocess.py --cfg {cfg} --output_dir {args.output_dir}"
-    subprocess.call(cmd, shell=True)
+    #subprocess.call(cmd, shell=True)
 
 
 if __name__ == '__main__':
