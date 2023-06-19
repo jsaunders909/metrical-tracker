@@ -23,6 +23,7 @@ def main(args):
     shutil.copy(image, os.path.join(MICA_dir, '0000000.png'))
     cmd = f"{sys.executable} MICA/demo.py -i {MICA_dir} -o {args.output_dir}"
     subprocess.call(cmd, shell=True)
+    shutil.copy(os.path.join(args.output_dir, '0000000', 'identity.np'), args.output_dir)
 
     # Run the tracker
     cfg = os.path.join(args.output_dir, 'config.yaml')
