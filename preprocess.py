@@ -18,6 +18,9 @@ def main(args):
     if not os.path.exists(save_root):
         Path(save_root).mkdir(parents=True)
 
+    if not os.path.exists(args.video):
+        raise ValueError(f'Could not find video at {args.video}'
+
     # Configure face detector
     mp_face_detection = mp.solutions.face_detection
 
@@ -89,6 +92,11 @@ def main(args):
                     if global_bb[i] == bb[i]:
                         extremes_names[i] = video
 
+
+    # Check for empty bounding box
+    if np.any(global_bb == np.inf):
+        print("No face detected in video {}".format(video))
+        return
 
     # Make the bounding box square
     width = global_bb[2] - global_bb[0]
