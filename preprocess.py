@@ -19,7 +19,7 @@ def main(args):
         Path(save_root).mkdir(parents=True)
 
     if not os.path.exists(args.video):
-        raise ValueError(f'Could not find video at {args.video}'
+        raise ValueError(f'Could not find video at {args.video}')
 
     # Configure face detector
     mp_face_detection = mp.solutions.face_detection
