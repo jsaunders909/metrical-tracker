@@ -58,8 +58,8 @@ def main(args):
                 if not ret:
                     break
 
-                if frame_idx % 10 != 0:
-                    continue
+                #if frame_idx % 10 != 0:
+                #    continue
                 frame_idx += 1
 
                 frame_shape = frame.shape
@@ -92,6 +92,7 @@ def main(args):
                     if global_bb[i] == bb[i]:
                         extremes_names[i] = video
 
+    print(f'Processed {frame_idx} frames')
 
     # Check for empty bounding box
     if np.any(global_bb == np.inf):
