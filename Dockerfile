@@ -9,3 +9,7 @@ ENV PATH /opt/conda/envs/$(head -1 /tmp/environment.yml | cut -d' ' -f2)/bin:$PA
 ENV CONDA_DEFAULT_ENV $(head -1 /tmp/environment.yml | cut -d' ' -f2)
 
 RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
+RUN apt-get install gcc -y
+RUN apt-get install --reinstall build-essential -y
+RUN pip install insightface
+RUN git config --global --add safe.directory /mnt/faster0/jrs68/metrical-tracker

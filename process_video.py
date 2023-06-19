@@ -2,12 +2,26 @@ import subprocess
 import os
 import sys
 import argparse
+import shutil
 
 
 def main(args):
 
     # Preprocess
     cmd = f"{sys.executable} preprocess.py --video {args.video} --save_root {args.output_dir}"
+    subprocess.call(cmd, shell=True)
+
+    # Run MICA
+    image = os.path.join(args.output_dir, 'crops', '0000000.png')
+    if not os.path.exists(image):
+        print('Preprocessing failed, exiting')
+        return
+
+    MICA_dir = os.path.join(args.output_dir, 'MICA')
+    if not os.path.exists(MICA_dir):
+        os.mkdir(MICA_dir)
+    shutil.copy(image, os.path.join(MICA_dir, '0000000.png'))
+    cmd = f"{sys.executable} MICA/demo.py -i {MICA_dir} -o {args.output_dir}"
     subprocess.call(cmd, shell=True)
 
     # Run the tracker
