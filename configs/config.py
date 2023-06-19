@@ -22,8 +22,8 @@ from yacs.config import CfgNode as CN
 cfg = CN()
 
 cfg.flame_geom_path = "data/FLAME2020/generic_model.pkl"
-cfg.flame_template_path = "data/FLAME2020/head_template.obj"
-cfg.flame_lmk_path = "data/FLAME2020/landmark_embedding.npy"
+cfg.flame_template_path = "data/head_template_mesh.obj"
+cfg.flame_lmk_path = "data/landmark_embedding.npy"
 cfg.tex_space_path = "data/FLAME2020/FLAME_albedo_from_BFM.npz"
 cfg.mask_image_path = "./data/uv_dub_mask.png"
 
