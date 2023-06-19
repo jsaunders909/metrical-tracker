@@ -164,7 +164,7 @@ def main(args):
     cap.release()
 
     # Save the video
-    cmd = f"ffmpeg -y --framerate {fps} -i {video} -vf crop={global_bb[2] - global_bb[0]}:{global_bb[3] - global_bb[1]}:{global_bb[0]}:{global_bb[1]} {os.path.join(save_root, 'video.mp4')}"
+    cmd = f"ffmpeg -y -r {fps} -i {video} -vf crop={global_bb[2] - global_bb[0]}:{global_bb[3] - global_bb[1]}:{global_bb[0]}:{global_bb[1]} {os.path.join(save_root, 'video.mp4')}"
     os.system(cmd)
 
     config = f"actor: {save_root} \n" \
