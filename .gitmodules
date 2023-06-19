@@ -1,0 +1,3 @@
+[submodule "MICA"]
+	path = MICA
+	url = https://github.com/jsaunders909/MICA.git
