@@ -9,7 +9,7 @@ def main(args):
 
     # Preprocess
     cmd = f"{sys.executable} preprocess.py --video {args.video} --save_root {args.output_dir}"
-    subprocess.call(cmd, shell=True)
+    #subprocess.call(cmd, shell=True)
 
     # Run MICA
     image = os.path.join(args.output_dir, 'crops', '0000000.png')
@@ -22,16 +22,16 @@ def main(args):
         os.mkdir(MICA_dir)
     shutil.copy(image, os.path.join(MICA_dir, '0000000.png'))
     cmd = f"{sys.executable} MICA/demo.py -i {MICA_dir} -o {args.output_dir}"
-    subprocess.call(cmd, shell=True)
+    #subprocess.call(cmd, shell=True)
     shutil.copy(os.path.join(args.output_dir, '0000000', 'identity.npy'), args.output_dir)
 
     # Run the tracker
     cfg = os.path.join(args.output_dir, 'config.yaml')
     cmd = f"{sys.executable} tracker.py --cfg {cfg}"
-    subprocess.call(cmd, shell=True)
+    #subprocess.call(cmd, shell=True)
 
     # Get the UVs
-    checkpoint_dir = os.path.join(args.output_dir, 'checkpoint')
+    checkpoint_dir = os.path.join(args.output_dir, 'config', 'checkpoint')
     uv_dir = os.path.join(args.output_dir, 'uv')
     cmd = f"{sys.executable} get_uv_and_mask.py --cfg {cfg} --checkpoint_dir {checkpoint_dir} --output_dir {uv_dir}"
     subprocess.call(cmd, shell=True)
