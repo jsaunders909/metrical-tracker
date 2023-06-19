@@ -52,6 +52,7 @@ def main(args):
 
             # Extract frames using cv2
             cap = cv2.VideoCapture(video)
+            fps = cap.get(cv2.CAP_PROP_FPS)
             frame_idx = 0
             while True:
                 ret, frame = cap.read()
@@ -163,7 +164,7 @@ def main(args):
     cap.release()
 
     # Save the video
-    cmd = f"ffmpeg -y -i {video} -vf crop={global_bb[2] - global_bb[0]}:{global_bb[3] - global_bb[1]}:{global_bb[0]}:{global_bb[1]} {os.path.join(save_root, 'video.mp4')}"
+    cmd = f"ffmpeg -y -framerate {fps} -i {video} -vf crop={global_bb[2] - global_bb[0]}:{global_bb[3] - global_bb[1]}:{global_bb[0]}:{global_bb[1]} {os.path.join(save_root, 'video.mp4')}"
     os.system(cmd)
 
     config = f"actor: {save_root} \n" \
