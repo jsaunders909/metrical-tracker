@@ -206,6 +206,9 @@ if __name__ == '__main__':
         cfg = update_cfg(cfg, args.cfg)
         cfg.cfg_file = cfg_file
 
+    if not os.path.exists(args.output_dir):
+        os.makedirs(args.output_dir)
+
     cfg.config_name = Path(args.cfg).stem
 
     checkpoints = glob(os.path.join(args.checkpoint_dir, '*.frame'))
