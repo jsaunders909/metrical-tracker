@@ -216,7 +216,7 @@ if __name__ == '__main__':
     model = UVRenderer(cfg, image_size, 'cuda:0')
 
     for i, frame_checkpoint in enumerate(checkpoints):
-        print(f'Frame {i}')
+        print(f'Frame {i}', os.path.join(args.output_dir, f'{i:05d}.png'))
         model.update_frame(frame_checkpoint)
         uv = model.get_uv()
 
