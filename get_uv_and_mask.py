@@ -198,7 +198,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    print(args, end='\n\n')
+    #print(args, end='\n\n')
 
     cfg = get_cfg_defaults()
     if args.cfg is not None:
@@ -213,6 +213,9 @@ if __name__ == '__main__':
 
     checkpoints = glob(os.path.join(args.checkpoint_dir, '*.frame'))
     checkpoints = sorted(checkpoints)
+
+    print(args.checkpoint_dir, len(checkpoints))
+
     frame_checkpoint = checkpoints[0]
     image_size = [torch.load(frame_checkpoint, map_location='cpu')['img_size']]
 
