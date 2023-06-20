@@ -28,7 +28,7 @@ def main(args):
     # Run the tracker
     cfg = os.path.join(args.output_dir, 'config.yaml')
     cmd = f"{sys.executable} tracker.py --cfg {cfg}"
-    subprocess.call(cmd, shell=True)
+    #subprocess.call(cmd, shell=True)
 
     # Get the UVs
     checkpoint_dir = os.path.join(args.output_dir, 'config', 'checkpoint')
