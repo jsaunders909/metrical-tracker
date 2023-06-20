@@ -100,7 +100,7 @@ class Tracker(object):
         self.mesh_folder = os.path.join(self.save_folder, self.actor_name, "mesh")
         self.depth_folder = os.path.join(self.save_folder, self.actor_name, "depth")
         self.create_output_folders()
-        self.writer = SummaryWriter(log_dir=self.save_folder + self.actor_name + '/logs')
+        self.writer = SummaryWriter(log_dir=os.path.join(self.save_folder, self.actor_name, 'logs'))
         self.setup_renderer()
 
     def get_image_size(self):
@@ -548,13 +548,13 @@ class Tracker(object):
 
         for log in logs: logger.info(log)
 
-    def checkpoint(self, batch, visualizations=[[View.GROUND_TRUTH, View.LANDMARKS, View.HEATMAP], [View.COLOR_OVERLAY, View.SHAPE_OVERLAY, View.SHAPE]], frame_dst='/video', save=True, dump_directly=False):
+    def checkpoint(self, batch, visualizations=[[View.GROUND_TRUTH, View.LANDMARKS, View.HEATMAP], [View.COLOR_OVERLAY, View.SHAPE_OVERLAY, View.SHAPE]], frame_dst='video', save=True, dump_directly=False):
         batch = self.to_cuda(batch)
         images, landmarks, landmarks_dense, _, _ = self.parse_batch(batch)
 
         input_image = util.to_image(batch['image'].clone()[0].cpu().numpy())
 
-        savefolder = self.save_folder + self.actor_name + frame_dst
+        savefolder = os.path.join(self.save_folder, self.actor_name, frame_dst)
         Path(savefolder).mkdir(parents=True, exist_ok=True)
 
         with torch.no_grad():
