@@ -90,6 +90,7 @@ def parse_args():
 
     print('---------------------- Config Name ----------------------')
     print(cfg.config_name)
+    print('---------------------------------------------------------')
     return cfg
 
 
