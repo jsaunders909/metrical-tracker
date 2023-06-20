@@ -86,6 +86,8 @@ class Tracker(object):
 
         logger.add(os.path.join(self.config.save_folder, self.actor_name, 'train.log'))
 
+        print(f'-------------------- {os.path.join(self.config.save_folder, self.actor_name, "train.log")} -------------------')
+
         # Latter will be set up
         self.frame = 0
         self.is_initializing = False
