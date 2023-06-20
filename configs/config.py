@@ -88,6 +88,8 @@ def parse_args():
 
     cfg.config_name = Path(args.cfg).stem
 
+    print('---------------------- Config Name ----------------------')
+    print(cfg.config_name)
     return cfg
 
 
