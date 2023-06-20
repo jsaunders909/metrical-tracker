@@ -43,8 +43,8 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--video', type=str, required=True)
-    parser.add_argument('--output_dir', type=str, required=True)
+    parser.add_argument('-i', '--input', type=str, required=True)
+    parser.add_argument('-o', '--output_dir', type=str, required=True)
 
     args = parser.parse_args()
 
