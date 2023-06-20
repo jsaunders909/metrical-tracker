@@ -8,7 +8,7 @@ import shutil
 def main(args):
 
     # Preprocess
-    cmd = f"{sys.executable} preprocess.py --video {args.video} --save_root {args.output_dir}"
+    cmd = f"{sys.executable} preprocess.py --video {args.input} --save_root {args.output_dir}"
     subprocess.call(cmd, shell=True)
 
     # Run MICA
