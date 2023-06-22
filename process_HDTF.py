@@ -5,7 +5,7 @@ import sys
 
 def main(args):
 
-    videos = glob(os.path.join(args.data_root, '*.mp4'))
+    videos = glob(os.path.join(args.input_dir, '*.mp4'))
 
     for i, video in enumerate(videos):
         print(f'Video {i} of {len(videos)}')
