@@ -167,6 +167,9 @@ def main(args):
     cmd = f"ffmpeg -y -r {fps} -i {video} -vf crop={global_bb[2] - global_bb[0]}:{global_bb[3] - global_bb[1]}:{global_bb[0]}:{global_bb[1]} {os.path.join(save_root, 'video.mp4')}"
     os.system(cmd)
 
+    cmd = f"ffmpeg -y {os.path.join(save_root, 'video.mp4')} {os.path.join(save_root, 'audio.wav')}"
+    os.system(cmd)
+
     config = f"actor: {save_root}\n" \
         f"save_folder: {save_root}\n" \
         "optimize_shape: true \n" \
