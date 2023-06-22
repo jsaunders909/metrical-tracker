@@ -13,6 +13,8 @@ def main(args):
         if not os.path.exists(out):
             os.makedirs(out)
         cmd = f"{sys.executable} process_video.py -i {video} -o {out}"
+        if args.crop:
+            cmd += ' --crop'
         subprocess.call(cmd, shell=True)
         break
 
@@ -22,5 +24,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--input_dir', type=str, required=True)
     parser.add_argument('-o', '--output_dir', type=str, required=True)
+    parser.add_argument('--crop', action='store_true')
     args = parser.parse_args()
     main(args)

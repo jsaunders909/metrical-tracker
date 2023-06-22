@@ -9,6 +9,8 @@ def main(args):
 
     # Preprocess
     cmd = f"{sys.executable} preprocess.py --video {args.input} --save_root {args.output_dir}"
+    if args.crop:
+        cmd += ' --crop'
     subprocess.call(cmd, shell=True)
 
     # Run MICA
@@ -45,6 +47,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--input', type=str, required=True)
     parser.add_argument('-o', '--output_dir', type=str, required=True)
+    parser.add_argument('--crop', action='store_true')
 
     args = parser.parse_args()
 

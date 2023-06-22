@@ -164,7 +164,10 @@ def main(args):
     cap.release()
 
     # Save the video
-    cmd = f"ffmpeg -y -r {fps} -i {video} -vf crop={global_bb[2] - global_bb[0]}:{global_bb[3] - global_bb[1]}:{global_bb[0]}:{global_bb[1]} {os.path.join(save_root, 'video.mp4')}"
+    if args.crop:
+        cmd = f"ffmpeg -y -r {fps} -i {video} -vf crop={global_bb[2] - global_bb[0]}:{global_bb[3] - global_bb[1]}:{global_bb[0]}:{global_bb[1]} {os.path.join(save_root, 'video.mp4')}"
+    else:
+        cmd = f"ffmpeg -y -r {fps} -i {video} {os.path.join(save_root, 'video.mp4')}"
     os.system(cmd)
 
     cmd = f"ffmpeg -y {os.path.join(save_root, 'video.mp4')} {os.path.join(save_root, 'audio.wav')}"
@@ -188,6 +191,7 @@ if __name__ == '__main__':
     parser.add_argument("--save_root", type=str, required=True, help="The root of the directory at which to save all "
                                                                      "results")
     parser.add_argument("--max_width_det", type=int, required=False, default='512', help="The size of the final crops")
+    parser.add_argument("--crop", action='store_true', help="Whether to crop the video to the bounding box")
 
     args = parser.parse_args()
     main(args)
