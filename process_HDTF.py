@@ -13,6 +13,11 @@ def main(args):
     for i, video in enumerate(videos):
         print(f'Video {i} of {len(videos)}')
         out = os.path.join(args.output_dir, os.path.basename(video).replace('.mp4', ''))
+
+        if len(glob(os.path.join(out, 'uv', '*.png'))) > 0:
+            print('Already processed, skipping')
+            continue
+
         if not os.path.exists(out):
             os.makedirs(out)
         cmd = f"{sys.executable} process_video.py -i {video} -o {out}"
@@ -20,6 +25,7 @@ def main(args):
             cmd += ' --crop'
         cmds.append(cmd)
 
+    print(f'Running {len(cmds)} jobs in parallel with {args.num_workers} workers')
     with Pool(args.num_workers) as p:
         p.map(subprocess.call, cmds)
 
