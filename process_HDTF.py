@@ -2,10 +2,13 @@ import os
 from glob import glob
 import subprocess
 import sys
+from multiprocessing import Pool
+
 
 def main(args):
 
     videos = glob(os.path.join(args.input_dir, '*.mp4'))
+    cmds = []
 
     for i, video in enumerate(videos):
         print(f'Video {i} of {len(videos)}')
@@ -15,8 +18,10 @@ def main(args):
         cmd = f"{sys.executable} process_video.py -i {video} -o {out}"
         if args.crop:
             cmd += ' --crop'
-        subprocess.call(cmd, shell=True)
-        break
+        cmds.append(cmd)
+
+    with Pool(args.num_workers) as p:
+        p.map(subprocess.call, cmds)
 
 
 if __name__ == '__main__':
@@ -24,6 +29,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--input_dir', type=str, required=True)
     parser.add_argument('-o', '--output_dir', type=str, required=True)
+    parser.add_argument('-n', '--num_workers', type=int, default=2)
     parser.add_argument('--crop', action='store_true')
     args = parser.parse_args()
     main(args)
