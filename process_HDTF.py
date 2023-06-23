@@ -22,8 +22,6 @@ def main(args):
             print('Already processed, skipping')
             continue
 
-        if not os.path.exists(out):
-            os.makedirs(out)
         cmd = f"{sys.executable} process_video.py -i {video} -o {out}"
         if args.crop:
             cmd += ' --crop'
