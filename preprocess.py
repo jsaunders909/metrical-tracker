@@ -165,9 +165,9 @@ def main(args):
 
     # Save the video
     if args.crop:
-        cmd = f"ffmpeg -y -r {fps} -i {video} -vf crop={global_bb[2] - global_bb[0]}:{global_bb[3] - global_bb[1]}:{global_bb[0]}:{global_bb[1]} {os.path.join(save_root, 'video.mp4')}"
+        cmd = f"ffmpeg -y -r {fps} -i {video} -t 00:00:30 -vf crop={global_bb[2] - global_bb[0]}:{global_bb[3] - global_bb[1]}:{global_bb[0]}:{global_bb[1]} {os.path.join(save_root, 'video.mp4')}"
     else:
-        cmd = f"ffmpeg -y -r {fps} -i {video} {os.path.join(save_root, 'video.mp4')}"
+        cmd = f"ffmpeg -y -r {fps} -i {video} -t 00:00:30 {os.path.join(save_root, 'video.mp4')}"
     os.system(cmd)
 
     cmd = f"ffmpeg -y {os.path.join(save_root, 'video.mp4')} {os.path.join(save_root, 'audio.wav')}"
