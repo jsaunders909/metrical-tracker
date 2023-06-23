@@ -11,6 +11,7 @@ def call(cmd):
 def main(args):
 
     videos = glob(os.path.join(args.input_dir, '*.mp4'))
+    videos = sorted(videos)
     cmds = []
 
     for i, video in enumerate(videos):

@@ -170,7 +170,7 @@ def main(args):
         cmd = f"ffmpeg -y -r {fps} -i {video} -t 00:00:30 {os.path.join(save_root, 'video.mp4')}"
     os.system(cmd)
 
-    cmd = f"ffmpeg -y {os.path.join(save_root, 'video.mp4')} {os.path.join(save_root, 'audio.wav')}"
+    cmd = f"ffmpeg -y -i {os.path.join(save_root, 'video.mp4')} {os.path.join(save_root, 'audio.wav')}"
     os.system(cmd)
 
     config = f"actor: {save_root}\n" \
@@ -178,7 +178,7 @@ def main(args):
         "optimize_shape: true \n" \
         "optimize_jaw: true \n" \
         "begin_frames: 1 \n" \
-        "keyframes: [0, 1] \n"
+        "keyframes: [0, 100, 200] \n"
 
     with open(os.path.join(save_root, 'config.yaml'), 'w') as f:
         f.write(config)
