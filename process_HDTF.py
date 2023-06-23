@@ -24,10 +24,11 @@ def main(args):
         if args.crop:
             cmd += ' --crop'
         cmds.append(cmd)
+        subprocess.call(cmd, shell=True)
 
-    print(f'Running {len(cmds)} jobs in parallel with {args.num_workers} workers')
-    with Pool(args.num_workers) as p:
-        p.map(subprocess.call, cmds)
+    #print(f'Running {len(cmds)} jobs in parallel with {args.num_workers} workers')
+    #with Pool(args.num_workers) as p:
+    #    p.map(subprocess.call, cmds)
 
 
 if __name__ == '__main__':
