@@ -12,6 +12,7 @@ def main(args):
 
     videos = glob(os.path.join(args.input_dir, '*.mp4'))
     videos = sorted(videos)
+    print(videos[0])
     cmds = []
 
     for i, video in enumerate(videos):
