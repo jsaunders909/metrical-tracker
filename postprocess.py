@@ -12,6 +12,11 @@ def main(args):
     cmd = f"{sys.executable} get_uv_and_mask.py --cfg {args.cfg} --checkpoint_dir {checkpoint_dir} --output_dir {uv_dir}"
     subprocess.call(cmd, shell=True)
 
+    track_video_out = os.path.join(work_dir, 'track.mp4')
+    track_video_in = os.path.join(work_dir, 'config', 'video')
+    cmd = f"ffmpeg -y -r 30 -i {track_video_in}/%05d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p {track_video_out}"
+    subprocess.call(cmd, shell=True)
+
     other_dirs = [os.path.join(work_dir, d) for d in os.listdir(work_dir) if
                   os.path.isdir(os.path.join(work_dir, d)) and d not in ['checkpoint', 'uv', 'input', 'crops']]
     for dir in other_dirs:
