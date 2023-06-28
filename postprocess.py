@@ -14,7 +14,7 @@ def main(args):
 
     track_video_out = os.path.join(work_dir, 'track.mp4')
     track_video_in = os.path.join(work_dir, 'config', 'video')
-    cmd = f"ffmpeg -y -r 30 -i {track_video_in}/%05d.png -c:v libx264 -vf fps=30 -pix_fmt yuv420p {track_video_out}"
+    cmd = f"ffmpeg -y -r 30 -i {track_video_in}/%05d.jpg -c:v libx264 -vf fps=30 -pix_fmt yuv420p {track_video_out}"
     subprocess.call(cmd, shell=True)
 
     other_dirs = [os.path.join(work_dir, d) for d in os.listdir(work_dir) if
