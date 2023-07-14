@@ -67,7 +67,7 @@ def main(args):
                 if not ret:
                     break
 
-                if n_frames > 1000:
+                if n_frames > n_frames:
                     break
 
                 #if frame_idx % 10 != 0:
