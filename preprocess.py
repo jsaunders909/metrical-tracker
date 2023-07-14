@@ -150,7 +150,7 @@ def main(args):
     else:
         cap = cv2.VideoCapture(video)
         frame_shape = cap.read()[1].shape
-        global_bb = [0, 0, frame_shape[1], frame_shape[0]]
+        global_bb = np.array([0, 0, frame_shape[1], frame_shape[0]])
 
     global_bb = global_bb.astype('int32')
     np.save(os.path.join(save_root, 'bounding_box.npy'), global_bb)
