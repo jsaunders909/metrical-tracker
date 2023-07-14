@@ -9,6 +9,21 @@ import numpy as np
 from tqdm import tqdm
 
 
+# We may need to pad the images for cropping
+def padded_crop(img, bb):
+    width = bb[2] - bb[0]
+    height = bb[3] - bb[1]
+    pad = max(width, height)
+
+    padded_image = cv2.copyMakeBorder(img, top=pad, left=pad, bottom=pad, right=pad,
+                                      borderType=cv2.BORDER_CONSTANT, value=[0, 0, 0])
+
+    return padded_image[
+           bb[1] + pad: bb[3] + pad,
+           bb[0] + pad: bb[2] + pad
+           ]
+
+
 
 def main(args):
 
@@ -35,19 +50,6 @@ def main(args):
         top_margin = 0.2
         bottom_margin = 0.2
 
-        # We may need to pad the images for cropping
-        def padded_crop(img, bb):
-            width = bb[2] - bb[0]
-            height = bb[3] - bb[1]
-            pad = max(width, height)
-
-            padded_image = cv2.copyMakeBorder(img, top=pad, left=pad, bottom=pad, right=pad,
-                                              borderType=cv2.BORDER_CONSTANT, value=[0, 0, 0])
-
-            return padded_image[
-                   bb[1] + pad: bb[3] + pad,
-                   bb[0] + pad: bb[2] + pad
-                   ]
 
         frame_shape = ()
         with mp_face_detection.FaceDetection(model_selection=0.8) as detector:
