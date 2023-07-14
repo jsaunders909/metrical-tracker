@@ -24,127 +24,133 @@ def main(args):
     # Configure face detector
     mp_face_detection = mp.solutions.face_detection
 
-    # We look for the smallest bounding box containing all bounding boxes for each frame
-    global_bb = np.array([np.inf, np.inf, -np.inf, -np.inf])
-    extremes_names = [-1, -1, -1, -1]
+    if args.crop:
 
-    left_margin = 0.1
-    right_margin = 0.1
-    top_margin = 0.2
-    bottom_margin = 0.2
+        # We look for the smallest bounding box containing all bounding boxes for each frame
+        global_bb = np.array([np.inf, np.inf, -np.inf, -np.inf])
+        extremes_names = [-1, -1, -1, -1]
 
-    # We may need to pad the images for cropping
-    def padded_crop(img, bb):
-        width = bb[2] - bb[0]
-        height = bb[3] - bb[1]
-        pad = max(width, height)
+        left_margin = 0.1
+        right_margin = 0.1
+        top_margin = 0.2
+        bottom_margin = 0.2
 
-        padded_image = cv2.copyMakeBorder(img, top=pad, left=pad, bottom=pad, right=pad,
-                                          borderType=cv2.BORDER_CONSTANT, value=[0, 0, 0])
+        # We may need to pad the images for cropping
+        def padded_crop(img, bb):
+            width = bb[2] - bb[0]
+            height = bb[3] - bb[1]
+            pad = max(width, height)
 
-        return padded_image[
-               bb[1] + pad: bb[3] + pad,
-               bb[0] + pad: bb[2] + pad
-               ]
+            padded_image = cv2.copyMakeBorder(img, top=pad, left=pad, bottom=pad, right=pad,
+                                              borderType=cv2.BORDER_CONSTANT, value=[0, 0, 0])
 
-    frame_shape = ()
-    with mp_face_detection.FaceDetection(model_selection=0.8) as detector:
+            return padded_image[
+                   bb[1] + pad: bb[3] + pad,
+                   bb[0] + pad: bb[2] + pad
+                   ]
 
-            # Extract frames using cv2
-            cap = cv2.VideoCapture(video)
-            fps = cap.get(cv2.CAP_PROP_FPS)
+        frame_shape = ()
+        with mp_face_detection.FaceDetection(model_selection=0.8) as detector:
 
-            length = args.length
-            length = length.split(':')
-            total_len = 3600 * int(length[0]) * 60 + int(length[1]) + int(length[2])
-            n_frames = total_len * fps
+                # Extract frames using cv2
+                cap = cv2.VideoCapture(video)
+                fps = cap.get(cv2.CAP_PROP_FPS)
 
-            print(f'Processing {total_len} seconds of video at {fps} fps = {n_frames} frames')
+                length = args.length
+                length = length.split(':')
+                total_len = 3600 * int(length[0]) * 60 + int(length[1]) + int(length[2])
+                n_frames = total_len * fps
 
-            frame_idx = 0
-            while True:
-                ret, frame = cap.read()
-                if not ret:
-                    break
+                print(f'Processing {total_len} seconds of video at {fps} fps = {n_frames} frames')
 
-                if frame_idx > n_frames:
-                    break
+                frame_idx = 0
+                while True:
+                    ret, frame = cap.read()
+                    if not ret:
+                        break
 
-                #if frame_idx % 10 != 0:
-                #    continue
-                frame_idx += 1
+                    if frame_idx > n_frames:
+                        break
 
-                frame_shape = frame.shape
-                results = detector.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+                    #if frame_idx % 10 != 0:
+                    #    continue
+                    frame_idx += 1
 
-                if not results.detections:
-                    continue
+                    frame_shape = frame.shape
+                    results = detector.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+
+                    if not results.detections:
+                        continue
 
 
-                detection = results.detections[0]
-                bb = detection.location_data.relative_bounding_box
-                bb = np.array([int(bb.xmin * frame.shape[1]),
-                               int(bb.ymin * frame.shape[0]),
-                               int((bb.xmin + bb.width) * frame.shape[1]),
-                               int((bb.ymin + bb.height) * frame.shape[0])])
+                    detection = results.detections[0]
+                    bb = detection.location_data.relative_bounding_box
+                    bb = np.array([int(bb.xmin * frame.shape[1]),
+                                   int(bb.ymin * frame.shape[0]),
+                                   int((bb.xmin + bb.width) * frame.shape[1]),
+                                   int((bb.ymin + bb.height) * frame.shape[0])])
 
-                # Add margins
-                width = bb[2] - bb[0]
-                height = bb[3] - bb[1]
+                    # Add margins
+                    width = bb[2] - bb[0]
+                    height = bb[3] - bb[1]
 
-                bb[0] -= int(float(left_margin) * width)
-                bb[1] -= int(float(top_margin) * height)
-                bb[2] += int(float(right_margin) * width)
-                bb[3] += int(float(bottom_margin) * height)
+                    bb[0] -= int(float(left_margin) * width)
+                    bb[1] -= int(float(top_margin) * height)
+                    bb[2] += int(float(right_margin) * width)
+                    bb[3] += int(float(bottom_margin) * height)
 
-                global_bb[:2] = np.minimum(bb[:2], global_bb[:2])
-                global_bb[2:] = np.maximum(bb[2:], global_bb[2:])
+                    global_bb[:2] = np.minimum(bb[:2], global_bb[:2])
+                    global_bb[2:] = np.maximum(bb[2:], global_bb[2:])
 
-                for i in range(4):
-                    if global_bb[i] == bb[i]:
-                        extremes_names[i] = video
+                    for i in range(4):
+                        if global_bb[i] == bb[i]:
+                            extremes_names[i] = video
 
-    print(f'Processed {frame_idx} frames')
+        print(f'Processed {frame_idx} frames')
 
-    # Check for empty bounding box
-    if np.any(global_bb == np.inf):
-        print("No face detected in video {}".format(video))
-        return
+        # Check for empty bounding box
+        if np.any(global_bb == np.inf):
+            print("No face detected in video {}".format(video))
+            return
 
-    # Make the bounding box square
-    width = global_bb[2] - global_bb[0]
-    height = global_bb[3] - global_bb[1]
+        # Make the bounding box square
+        width = global_bb[2] - global_bb[0]
+        height = global_bb[3] - global_bb[1]
 
-    print(global_bb)
+        print(global_bb)
 
-    if width > height:
-        global_bb[1] -= (width - height) // 2
-        global_bb[3] += (width - height) - ((width - height) // 2)
-    elif height > width:
-        global_bb[0] -= (height - width) // 2
-        global_bb[2] += (height - width) - ((height - width) // 2)
+        if width > height:
+            global_bb[1] -= (width - height) // 2
+            global_bb[3] += (width - height) - ((width - height) // 2)
+        elif height > width:
+            global_bb[0] -= (height - width) // 2
+            global_bb[2] += (height - width) - ((height - width) // 2)
 
-    print(global_bb)
+        print(global_bb)
 
-    # Shift the box to be contained within the image, if possible
-    if global_bb[0] < 0:
-        shift = min(-global_bb[0], frame_shape[1] - global_bb[2])
-        global_bb[0] += shift
-        global_bb[2] += shift
-    elif global_bb[2] > frame_shape[1]:
-        shift = max(global_bb[0], frame_shape[1] - global_bb[2])
-        global_bb[2] += shift
-        global_bb[0] += shift
-    if global_bb[1] < 0:
-        shift = min(-global_bb[1], frame_shape[0] - global_bb[3])
-        global_bb[1] += shift
-        global_bb[3] += shift
-    elif global_bb[3] > frame_shape[0]:
-        shift = max(-global_bb[1], frame_shape[0] - global_bb[3])
-        global_bb[3] += shift
-        global_bb[1] += shift
+        # Shift the box to be contained within the image, if possible
+        if global_bb[0] < 0:
+            shift = min(-global_bb[0], frame_shape[1] - global_bb[2])
+            global_bb[0] += shift
+            global_bb[2] += shift
+        elif global_bb[2] > frame_shape[1]:
+            shift = max(global_bb[0], frame_shape[1] - global_bb[2])
+            global_bb[2] += shift
+            global_bb[0] += shift
+        if global_bb[1] < 0:
+            shift = min(-global_bb[1], frame_shape[0] - global_bb[3])
+            global_bb[1] += shift
+            global_bb[3] += shift
+        elif global_bb[3] > frame_shape[0]:
+            shift = max(-global_bb[1], frame_shape[0] - global_bb[3])
+            global_bb[3] += shift
+            global_bb[1] += shift
 
-    print(global_bb)
+        print(global_bb)
+    else:
+        cap = cv2.VideoCapture(video)
+        frame_shape = cap.read()[1].shape
+        global_bb = [0, 0, frame_shape[1], frame_shape[0]]
 
     global_bb = global_bb.astype('int32')
     np.save(os.path.join(save_root, 'bounding_box.npy'), global_bb)
