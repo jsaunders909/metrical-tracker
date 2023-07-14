@@ -42,6 +42,10 @@ def main(args):
     cmd = f"{sys.executable} postprocess.py --cfg {cfg} --output_dir {args.output_dir}"
     subprocess.call(cmd, shell=True)
 
+    # Make the video for visualization
+    cmd = f"{sys.executable} make_vis.py -i {args.output_dir} -o {os.path.join(args.output_dir, 'vis.mp4')}"
+    subprocess.call(cmd, shell=True)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
