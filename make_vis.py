@@ -1,6 +1,18 @@
 import os, sys, cv2
 import numpy as np
 
+def padded_crop(img, bb):
+    width = bb[2] - bb[0]
+    height = bb[3] - bb[1]
+    pad = max(width, height)
+
+    padded_image = cv2.copyMakeBorder(img, top=pad, left=pad, bottom=pad, right=pad,
+                                      borderType=cv2.BORDER_CONSTANT, value=[0, 0, 0])
+
+    return padded_image[
+           bb[1] + pad: bb[3] + pad,
+           bb[0] + pad: bb[2] + pad
+           ]
 
 def main(args):
     in_dir = args.in_dir
@@ -9,11 +21,13 @@ def main(args):
     n = len(os.listdir(os.path.join(in_dir, 'uv')))
 
     writer = cv2.VideoWriter(args.out_path, cv2.VideoWriter_fourcc(*'mp4v'), 30, (512 * 3, 512))
+    bb = np.load(os.path.join(in_dir, 'bounding_box.npy'))
 
     for i in range(n):
         crop = cv2.imread(os.path.join(in_dir, 'crops', f'{i:07d}.png'))
-        crop = cv2.resize(crop, (512, 512))
+        #crop = cv2.resize(crop, (512, 512))
         uv = cv2.imread(os.path.join(in_dir, 'uv', f'{i:05d}.png'))
+        uv = padded_crop(uv, bb)
         comb = ((uv.astype('float32') + crop.astype('float32')) / 2).astype('uint8')
 
         frame = np.concatenate((crop, uv, comb), axis=1)
