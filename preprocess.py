@@ -186,9 +186,12 @@ def main(args):
     if args.crop:
         print('Cropping video')
         cmd = f"ffmpeg -y -i {video} -s {args.size}x{args.size} -c:v copy -t {args.length} -vf crop={global_bb[2] - global_bb[0]}:{global_bb[3] - global_bb[1]}:{global_bb[0]}:{global_bb[1]} {os.path.join(save_root, 'video.mp4')}"
+        print(cmd)
     else:
         print('Not cropping video')
         cmd = f"ffmpeg -y -i {video} -s {args.size}x{args.size} -c:v copy -t {args.length} {os.path.join(save_root, 'video.mp4')}"
+        print(cmd)
+
     os.system(cmd)
 
     cmd = f"ffmpeg -y -i {os.path.join(save_root, 'video.mp4')} {os.path.join(save_root, 'audio.wav')}"
