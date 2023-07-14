@@ -53,6 +53,12 @@ def main(args):
             # Extract frames using cv2
             cap = cv2.VideoCapture(video)
             fps = cap.get(cv2.CAP_PROP_FPS)
+
+            length = args.length
+            length = length.split(':')
+            total_len = 3600 * int(length[0]) * 60 + int(length[1]) + int(length[2])
+            n_frames = args.length * fps
+
             frame_idx = 0
             while True:
                 ret, frame = cap.read()
@@ -169,10 +175,10 @@ def main(args):
     # Save the video
     if args.crop:
         print('Cropping video')
-        cmd = f"ffmpeg -y -i {video} -c:v copy -t 00:00:30 -vf crop={global_bb[2] - global_bb[0]}:{global_bb[3] - global_bb[1]}:{global_bb[0]}:{global_bb[1]} {os.path.join(save_root, 'video.mp4')}"
+        cmd = f"ffmpeg -y -i {video} -c:v copy -t {args.length} -vf crop={global_bb[2] - global_bb[0]}:{global_bb[3] - global_bb[1]}:{global_bb[0]}:{global_bb[1]} {os.path.join(save_root, 'video.mp4')}"
     else:
         print('Not cropping video')
-        cmd = f"ffmpeg -y -i {video} -c:v copy -t 00:00:30 {os.path.join(save_root, 'video.mp4')}"
+        cmd = f"ffmpeg -y -i {video} -c:v copy -t {args.length} {os.path.join(save_root, 'video.mp4')}"
     os.system(cmd)
 
     cmd = f"ffmpeg -y -i {os.path.join(save_root, 'video.mp4')} {os.path.join(save_root, 'audio.wav')}"
@@ -197,6 +203,6 @@ if __name__ == '__main__':
                                                                      "results")
     parser.add_argument("--max_width_det", type=int, required=False, default='512', help="The size of the final crops")
     parser.add_argument("--crop", action='store_true', help="Whether to crop the video to the bounding box")
-
+    parser.add_argument("--length", type=str, required=False, default='00:00:3', help="The length of the video to extract")
     args = parser.parse_args()
     main(args)
