@@ -28,7 +28,7 @@ def main(args):
         crop = cv2.imread(os.path.join(in_dir, 'crops', f'{i:07d}.png'))
         #crop = cv2.resize(crop, (512, 512))
         uv = cv2.imread(os.path.join(in_dir, 'uv', f'{i:05d}.png'))
-        uv = padded_crop(uv, bb)
+        #uv = padded_crop(uv, bb)
         comb = ((uv.astype('float32') + crop.astype('float32')) / 2).astype('uint8')
 
         frame = np.concatenate((crop, uv, comb), axis=1)
