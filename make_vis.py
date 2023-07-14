@@ -13,7 +13,7 @@ def main(args):
     for i in range(n):
         crop = cv2.imread(os.path.join(in_dir, 'crops', f'{i:07d}.png'))
         crop = cv2.resize(crop, (512, 512))
-        uv = cv2.imread(os.path.join(in_dir, 'uv', f'{i:05d.png}'))
+        uv = cv2.imread(os.path.join(in_dir, 'uv', f'{i:05d}.png'))
         comb = ((uv.astype('float32') + crop.astype('float32')) / 2).astype('uint8')
 
         frame = np.concatenate((crop, uv, comb), axis=1)
@@ -24,8 +24,8 @@ def main(args):
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--in_dir', type=str, required=True)
-    parser.add_argument('--out_path', type=str, required=True)
+    parser.add_argument('-i', '--in_dir', type=str, required=True)
+    parser.add_argument('-o', '--out_path', type=str, required=True)
 
     args = parser.parse_args()
 
