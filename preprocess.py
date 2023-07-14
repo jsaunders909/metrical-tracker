@@ -57,7 +57,7 @@ def main(args):
             length = args.length
             length = length.split(':')
             total_len = 3600 * int(length[0]) * 60 + int(length[1]) + int(length[2])
-            n_frames = args.length * fps
+            n_frames = total_len
 
             frame_idx = 0
             while True:
