@@ -190,12 +190,14 @@ def main(args):
     cmd = f"ffmpeg -y -i {args.video} {os.path.join(save_root, 'audio.wav')}"
     os.system(cmd)
 
+    keyframes = [0, int(0.6 * n_frames), int(0.9 * n_frames)]
+
     config = f"actor: {save_root}\n" \
         f"save_folder: {save_root}\n" \
         "optimize_shape: true \n" \
         "optimize_jaw: true \n" \
         "begin_frames: 1 \n" \
-        "keyframes: [0, 100, 200] \n" \
+        "keyframes: [0, 20, 80] \n" \
         f"fps: {fps}"
 
     with open(os.path.join(save_root, 'config.yaml'), 'w') as f:
