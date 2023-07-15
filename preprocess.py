@@ -46,7 +46,7 @@ def main(args):
     length = args.length
     length = length.split(':')
     print(length)
-    total_len = (3600 * int(length[0])) * (60 + int(length[1])) + int(length[2])
+    total_len = (3600 * int(length[0])) + (60 + int(length[1])) + int(length[2])
     n_frames = total_len * fps
 
     print('*' * 80)
