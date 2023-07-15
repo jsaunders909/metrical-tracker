@@ -20,9 +20,12 @@ def main(args):
 
     n = len(os.listdir(os.path.join(in_dir, 'uv')))
 
+    cap = cv2.VideoCapture(os.path.join(in_dir, 'video.mp4'))
+    fps = cap.get(cv2.CAP_PROP_FPS)
+
     bb = np.load(os.path.join(in_dir, 'bounding_box.npy'))
     shape = [bb[2] - bb[0], bb[3] - bb[1]]
-    writer = cv2.VideoWriter(args.out_path, cv2.VideoWriter_fourcc(*'mp4v'), 30, (512 * 3, 512))
+    writer = cv2.VideoWriter(args.out_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (512 * 3, 512))
 
     for i in range(n):
         crop = cv2.imread(os.path.join(in_dir, 'crops', f'{i:07d}.png'))
