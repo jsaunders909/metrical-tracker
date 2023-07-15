@@ -25,8 +25,8 @@ def main(args):
     checkpoint_dir = os.path.join(args.output_dir, 'checkpoint')
     uv_dir = os.path.join(args.output_dir, 'uv')
 
-    cmd = f"{sys.executable} get_uv_and_mask.py --cfg {args.cfg} --checkpoint_dir {checkpoint_dir} --output_dir {uv_dir}"
-    subprocess.call(cmd, shell=True)
+    #cmd = f"{sys.executable} get_uv_and_mask.py --cfg {args.cfg} --checkpoint_dir {checkpoint_dir} --output_dir {uv_dir}"
+    #subprocess.call(cmd, shell=True)
 
     video = os.path.join(work_dir, 'video.mp4')
     cap = cv2.VideoCapture(video)
