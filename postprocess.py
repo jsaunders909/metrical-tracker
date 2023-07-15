@@ -3,6 +3,20 @@ import sys
 import subprocess
 import shutil
 import cv2
+from glob import glob
+
+
+def write_video(root, out_path, suffix='.png', fps=30):
+
+    images = sorted(glob(os.path.join(root, f'*{suffix}')))
+    im = cv2.imread(images[0])
+    height, width, _ = im.shape
+
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    cap = cv2.VideoWriter(out_path, fourcc, fps, (width, height))
+    for im in images:
+        cap.write(cv2.imread(im))
+    cap.release()
 
 
 def main(args):
@@ -20,14 +34,23 @@ def main(args):
 
     track_video_out = os.path.join(work_dir, 'track.mp4')
     track_video_in = os.path.join(work_dir, 'config', 'video')
-    cmd = f"ffmpeg -y -framerate {fps} -i {track_video_in}/%05d.jpg -c:v libx264 -vf -pix_fmt yuv420p {track_video_out}"
+    write_video(track_video_in, track_video_out, fps=fps, suffix='.jpg')
     subprocess.call(cmd, shell=True)
 
+    # Clean up
     other_dirs = [os.path.join(work_dir, d) for d in os.listdir(work_dir) if
-                  os.path.isdir(os.path.join(work_dir, d)) and d not in ['checkpoint', 'uv', 'input', 'crops']]
-    #for dir in other_dirs:
-    #    shutil.rmtree(dir)
+                  os.path.isdir(os.path.join(work_dir, d)) and d not in ['checkpoint', 'uv', 'input', 'crops', 'config']]
+    for dir in other_dirs:
+        shutil.rmtree(dir)
 
+    shutil.rmtree(os.path.join(work_dir, 'config', 'depth'))
+    shutil.rmtree(os.path.join(work_dir, 'config', 'video'))
+    shutil.rmtree(os.path.join(work_dir, 'config', 'input'))
+    shutil.rmtree(os.path.join(work_dir, 'config', 'logs'))
+    shutil.rmtree(os.path.join(work_dir, 'config', 'pyramid'))
+    shutil.rmtree(os.path.join(work_dir, 'config', 'mesh'))
+    os.remove(os.path.join(work_dir, 'config', 'canonical.obj'))
+    os.remove(os.path.join(work_dir, 'config', 'train.log'))
 
 if __name__ == '__main__':
     import argparse
