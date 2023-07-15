@@ -39,6 +39,17 @@ def main(args):
     # Configure face detector
     mp_face_detection = mp.solutions.face_detection
 
+    # Extract frames using cv2
+    cap = cv2.VideoCapture(video)
+    fps = cap.get(cv2.CAP_PROP_FPS)
+
+    length = args.length
+    length = length.split(':')
+    total_len = 3600 * int(length[0]) * 60 + int(length[1]) + int(length[2])
+    n_frames = total_len * fps
+
+    print(f'Processing {total_len} seconds of video at {fps} fps = {n_frames} frames')
+
     if args.crop:
 
         # We look for the smallest bounding box containing all bounding boxes for each frame
@@ -53,17 +64,6 @@ def main(args):
 
         frame_shape = ()
         with mp_face_detection.FaceDetection(model_selection=0.8) as detector:
-
-                # Extract frames using cv2
-                cap = cv2.VideoCapture(video)
-                fps = cap.get(cv2.CAP_PROP_FPS)
-
-                length = args.length
-                length = length.split(':')
-                total_len = 3600 * int(length[0]) * 60 + int(length[1]) + int(length[2])
-                n_frames = total_len * fps
-
-                print(f'Processing {total_len} seconds of video at {fps} fps = {n_frames} frames')
 
                 frame_idx = 0
                 while True:
