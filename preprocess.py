@@ -195,7 +195,8 @@ def main(args):
         "optimize_shape: true \n" \
         "optimize_jaw: true \n" \
         "begin_frames: 1 \n" \
-        "keyframes: [0, 100, 200] \n"
+        "keyframes: [0, 100, 200] \n" \
+        f"fps: {fps}"
 
     with open(os.path.join(save_root, 'config.yaml'), 'w') as f:
         f.write(config)
