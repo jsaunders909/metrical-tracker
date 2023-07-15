@@ -35,7 +35,6 @@ def main(args):
     track_video_out = os.path.join(work_dir, 'track.mp4')
     track_video_in = os.path.join(work_dir, 'config', 'video')
     write_video(track_video_in, track_video_out, fps=fps, suffix='.jpg')
-    subprocess.call(cmd, shell=True)
 
     # Clean up
     other_dirs = [os.path.join(work_dir, d) for d in os.listdir(work_dir) if
