@@ -34,6 +34,8 @@ def main(args):
         frame = np.concatenate((crop, uv, comb), axis=1)
         writer.write(frame)
 
+        print(f'Written video frame {i}')
+
     writer.release()
 
 if __name__ == '__main__':
