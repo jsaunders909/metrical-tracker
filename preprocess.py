@@ -187,7 +187,7 @@ def main(args):
     cap.release()
     writer.release()
 
-    cmd = f"ffmpeg -y -i {os.path.join(save_root, 'video.mp4')} {os.path.join(save_root, 'audio.wav')}"
+    cmd = f"ffmpeg -y -i {args.video} {os.path.join(save_root, 'audio.wav')}"
     os.system(cmd)
 
     config = f"actor: {save_root}\n" \
