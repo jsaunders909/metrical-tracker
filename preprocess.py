@@ -48,6 +48,7 @@ def main(args):
     total_len = 3600 * int(length[0]) * 60 + int(length[1]) + int(length[2])
     n_frames = total_len * fps
 
+    print('*' * 80)
     print(f'Processing {total_len} seconds of video at {fps} fps = {n_frames} frames')
 
     if args.crop:
