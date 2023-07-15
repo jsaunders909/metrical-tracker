@@ -50,18 +50,18 @@ def main(args):
     print('------------------------------------------------------------')
     subprocess.call(cmd, shell=True)
 
-    # Postprocess
-    cmd = f"{sys.executable} postprocess.py --cfg {cfg} --output_dir {args.output_dir}"
-    print('------------------------------------------------------------')
-    print('Running postprocessing')
-    print(cmd)
-    print('------------------------------------------------------------')
-    subprocess.call(cmd, shell=True)
-
     # Make the video for visualization
     cmd = f"{sys.executable} make_vis.py -i {args.output_dir} -o {os.path.join(args.output_dir, 'vis.mp4')}"
     print('------------------------------------------------------------')
     print('Running visualization')
+    print(cmd)
+    print('------------------------------------------------------------')
+    subprocess.call(cmd, shell=True)
+
+    # Postprocess
+    cmd = f"{sys.executable} postprocess.py --cfg {cfg} --output_dir {args.output_dir}"
+    print('------------------------------------------------------------')
+    print('Running postprocessing')
     print(cmd)
     print('------------------------------------------------------------')
     subprocess.call(cmd, shell=True)

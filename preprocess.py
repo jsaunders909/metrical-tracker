@@ -212,7 +212,7 @@ if __name__ == '__main__':
                                                                      "results")
     parser.add_argument("--max_width_det", type=int, required=False, default='512', help="The size of the final crops")
     parser.add_argument("--crop", action='store_true', help="Whether to crop the video to the bounding box")
-    parser.add_argument("--length", type=str, required=False, default='00:00:3', help="The length of the video to extract")
+    parser.add_argument("--length", type=str, required=False, default='00:01:00', help="The length of the video to extract")
     parser.add_argument("--size", type=int, required=False, default=512, help="The size of the final crops")
     args = parser.parse_args()
     main(args)
