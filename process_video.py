@@ -34,6 +34,7 @@ def main(args):
 
     # Get the UVs
     checkpoint_dir = os.path.join(args.output_dir, 'config', 'checkpoint')
+    print(checkpoint_dir)
     uv_dir = os.path.join(args.output_dir, 'uv')
     cmd = f"{sys.executable} get_uv_and_mask.py --cfg {cfg} --checkpoint_dir {checkpoint_dir} --output_dir {uv_dir}"
     subprocess.call(cmd, shell=True)
