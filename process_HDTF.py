@@ -16,6 +16,9 @@ def main(args):
     cmds = []
 
     for i, video in enumerate(videos):
+        if 0 < args.max_videos <= i:
+            break
+
         print(f'Video {i} of {len(videos)}')
         out = os.path.join(args.output_dir, os.path.basename(video).replace('.mp4', ''))
 
@@ -40,6 +43,7 @@ if __name__ == '__main__':
     parser.add_argument('-i', '--input_dir', type=str, required=True)
     parser.add_argument('-o', '--output_dir', type=str, required=True)
     parser.add_argument('-n', '--num_workers', type=int, default=2)
+    parser.add_argument('-m', '--max_videos', type=int, default=-1)
     parser.add_argument('--crop', action='store_true')
     args = parser.parse_args()
     main(args)
