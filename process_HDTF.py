@@ -3,6 +3,7 @@ from glob import glob
 import subprocess
 import sys
 from multiprocessing import Pool
+import numpy as np
 
 
 def call(cmd):
@@ -12,11 +13,18 @@ def main(args):
 
     videos = glob(os.path.join(args.input_dir, '*.mp4'))
     videos = sorted(videos)
+    videos = np.random.permutation(videos)
     print(videos[0])
     cmds = []
 
+    n_processed = 0
     for i, video in enumerate(videos):
-        if 0 < args.max_videos <= len(cmds):
+        out = os.path.join(args.output_dir, os.path.basename(video).replace('.mp4', ''))
+        if len(glob(os.path.join(out, 'uv', '*.png'))) > 0:
+            n_processed += 1
+
+    for i, video in enumerate(videos):
+        if 0 < args.max_videos - n_processed < len(cmds):
             break
 
         print(f'Video {i} of {len(videos)}')
