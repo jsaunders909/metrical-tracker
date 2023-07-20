@@ -16,7 +16,7 @@ def main(args):
     cmds = []
 
     for i, video in enumerate(videos):
-        if 0 < args.max_videos <= i:
+        if 0 < args.max_videos <= len(cmds):
             break
 
         print(f'Video {i} of {len(videos)}')
