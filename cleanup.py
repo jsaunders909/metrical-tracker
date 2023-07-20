@@ -10,7 +10,9 @@ def main(args):
 
     for i, video in enumerate(videos):
         print(video, os.path.exists(os.path.join(args.input_dir, video, 'track.mp4')))
-
+        if not os.path.exists(os.path.join(args.input_dir, video, 'track.mp4')):
+            shutil.rmtree(os.path.join(args.input_dir, video))
+            print(f'Removed {video}')
 
 if __name__ == '__main__':
     import argparse
