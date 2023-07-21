@@ -80,7 +80,7 @@ class UVRenderer:
         )
         
     def update_frame(self, frame_checkpoint):
-        
+
         payload = torch.load(frame_checkpoint, map_location=self.device)
 
         camera_params = payload['camera']
@@ -101,6 +101,11 @@ class UVRenderer:
 
         self.frame = int(payload['frame_id'])
         self.image_size = torch.from_numpy(payload['img_size'])[None].to(self.device)
+
+    def set_inference_params(self, exp, jaw):
+
+        self.exp = torch.tensor(exp).to(self.device)
+        self.jaw = torch.tensor(jaw).to(self.device)
 
     def get_uv(self):
         self.diff_renderer.rasterizer.reset()
@@ -195,6 +200,7 @@ if __name__ == '__main__':
     parser.add_argument('--cfg', type=str, required=True)
     parser.add_argument('--checkpoint_dir', type=str, required=True)
     parser.add_argument('--output_dir', type=str, required=True)
+    parser.add_argument('--inference_params', type=str, required=False, default=None)
 
     args = parser.parse_args()
 
@@ -221,9 +227,32 @@ if __name__ == '__main__':
 
     model = UVRenderer(cfg, image_size, 'cuda:0')
 
+    n_frames = len(checkpoints)
+    # Inference Params
+    if args.inference_params is not None:
+        inference_params = {**np.load(args.inference_params)}
+        inference_exp = inference_params['exp']
+        inference_jaw = inference_params['jaw']
+
+        n_inf_frames = inference_exp.shape[0]
+        if n_inf_frames > n_frames:
+            print(f'Inference params has {n_inf_frames} frames, but only {n_frames} checkpoints were found. Truncating inference params.')
+            inference_exp = inference_exp[:n_frames]
+            inference_jaw = inference_jaw[:n_frames]
+        n_frames = min(n_frames, n_inf_frames)
+
+
     for i, frame_checkpoint in tqdm(enumerate(checkpoints)):
+
+        if i > n_frames:
+            break
+
         #print(f'Frame {i}', os.path.join(args.output_dir, f'{i:05d}.png'))
         model.update_frame(frame_checkpoint)
+
+        if args.inference_params is not None:
+            model.set_inference_params(inference_exp[i], inference_jaw[i])
+
         uv = model.get_uv()
 
         # Map uvs to [0, 1]

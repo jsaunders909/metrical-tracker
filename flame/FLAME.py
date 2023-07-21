@@ -269,7 +269,63 @@ class FLAME(nn.Module):
 
         return vertices, lmk68, mp
 
-    def _register_default_params(self, param_fname, dim):
+    def forward_verts_and_pose(self, vertices, cameras, trans_params=None, rot_params=None):
+
+        batch_size = vertices.shape[0]
+
+        I = matrix_to_rotation_6d(torch.cat([torch.eye(3)[None]] * batch_size, dim=0).cuda())
+
+        if trans_params is None:
+            trans_params = torch.zeros(batch_size, 3).cuda()
+        if rot_params is None:
+            rot_params = I.clone()
+        neck_pose_params = I.clone()
+        jaw_pose_params = I.clone()
+        eye_pose_params = torch.cat([I.clone()] * 2, dim=1)
+        shape_params = self.shape_params.expand(batch_size, -1)
+        expression_params = self.expression_params.expand(batch_size, -1)
+
+        # Concatenate identity shape and expression parameters
+        betas = torch.cat([shape_params, expression_params], dim=1)
+
+        # The pose vector contains global rotation, and neck, jaw, and eyeball rotations
+        full_pose = torch.cat([rot_params, neck_pose_params, jaw_pose_params, eye_pose_params], dim=1)
+
+        # FLAME models shape and expression deformations as vertex offset from the mean face in 'zero pose', called v_template
+        template_vertices = vertices
+
+        # Use linear blendskinning to model pose roations
+        vertices, _ = lbs(betas, full_pose, template_vertices,
+                          self.shapedirs, self.posedirs,
+                          self.J_regressor, self.parents,
+                          self.lbs_weights, dtype=self.dtype)
+
+        lmk_faces_idx = self.lmk_faces_idx.unsqueeze(dim=0).expand(batch_size, -1).contiguous()
+        lmk_bary_coords = self.lmk_bary_coords.unsqueeze(dim=0).expand(batch_size, -1, -1).contiguous()
+
+        dyn_lmk_faces_idx, dyn_lmk_bary_coords = self._find_dynamic_lmk_idx_and_bcoords(
+            vertices, full_pose, self.dynamic_lmk_faces_idx,
+            self.dynamic_lmk_bary_coords,
+            self.neck_kin_chain, cameras, dtype=self.dtype)
+
+        lmk_faces_idx = torch.cat([dyn_lmk_faces_idx, lmk_faces_idx], 1)
+        lmk_bary_coords = torch.cat([dyn_lmk_bary_coords, lmk_bary_coords], 1)
+
+        lmk68 = self._vertices2landmarks(vertices, self.faces, lmk_faces_idx, lmk_bary_coords)
+
+        mp_lmk_faces_idx = self.mp_lmk_faces_idx.unsqueeze(dim=0).expand(batch_size, -1).contiguous()
+        mp_lmk_bary_coords = self.mp_lmk_bary_coords.unsqueeze(dim=0).expand(batch_size, -1, -1).contiguous()
+
+        mp = self._vertices2landmarks(vertices, self.faces, mp_lmk_faces_idx, mp_lmk_bary_coords)
+
+        vertices = vertices + trans_params.unsqueeze(dim=1)
+        lmk68 = lmk68 + trans_params.unsqueeze(dim=1)
+        mp = mp + trans_params.unsqueeze(dim=1)
+
+        return vertices, lmk68, mp
+
+
+def _register_default_params(self, param_fname, dim):
         default_params = torch.zeros([1, dim], dtype=self.dtype, requires_grad=False)
         self.register_parameter(param_fname, nn.Parameter(default_params, requires_grad=False))
 
